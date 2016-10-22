@@ -10,11 +10,17 @@
 | and give it the controller to call when that URI is requested.
 |
 */
-
-Route::get('/', function () {
-    return view('welcome');
+Route::group(['middware' => 'web'], function(){
+    Route::get('/', function () {
+        return view('welcome');
+    });
 });
+    
+Route::group(['middware' => 'web'], function(){
+    Route::auth();
+    Route::get('/change', 'UsersController@changePassword');
+    Route::post('change', 'UsersController@change');
+});
+    
 
-Route::auth();
-
-Route::get('/home', 'HomeController@index');
+    
