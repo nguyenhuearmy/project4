@@ -18,8 +18,11 @@ Route::group(['middware' => 'web'], function(){
     
 Route::group(['middware' => 'web'], function(){
     Route::auth();
+    
     Route::get('/change', 'UsersController@changePassword');
     Route::post('change', 'UsersController@change');
+    Route::get('/profile', 'UsersController@profile');
+    Route::post('profile', 'UsersController@setprofile');
 });
     
 

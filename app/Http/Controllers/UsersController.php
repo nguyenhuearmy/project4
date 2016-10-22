@@ -11,9 +11,29 @@ use Hash;
 class UsersController extends Controller
 {
     public function __construct() {
-        $this->middleware('auth')->only(['changePassword', 'change']);
+        $this->middleware('auth');
     }
     
+    public function profile(){
+        $user = \Auth::user();
+        return view('auth/profile', compact('user'));
+    }
+    
+    public function setprofile(Request $request){
+        $this->validate($request, [
+            'name' => 'required',
+        ]);
+        $user = \Auth::user();
+        $user->name = $request->input('name');
+        $logo = $request->file('avatar');
+        $name = $logo->getClientOriginalName();
+        $success = $logo->move('image', time() . $name);
+        $user->avatar = time() . $name;
+        $user->save();
+        \Session::flash('message', 'Your Profile has been updated successfully!');
+        return redirect('/');
+    }
+
     public function changePassword(){
         return view('auth/changePassword');
     }
@@ -25,11 +45,10 @@ class UsersController extends Controller
             'confirm_password' => 'required',
         ]);
         
-        $credentials = $request->only('password', 'new_password', 'confirm_password');
         $user = \Auth::user();
-        if(Hash::check($credentials['password'], $user->password)){
-            if($credentials['new_password'] == $credentials['confirm_password']){
-                $user->password = bcrypt($credentials['new_password']);
+        if(Hash::check($request->input('password'), $user->password)){
+            if($request->input('new_password') == $request->input('confirm_password')){
+                $user->password = bcrypt($request->input('new_password'));
                 $user->save();
                 \Session::flash('message', 'The new password has been updated successfully!');
                 return redirect('/');
