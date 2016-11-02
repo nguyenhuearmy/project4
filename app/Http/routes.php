@@ -42,6 +42,10 @@ Route::group(['middware' => 'web'], function(){
     
     // Route Comment
     Route::post('comment', 'CommentsController@create');
+    
+    //Route Like
+    Route::post('like', 'FilesController@like');
+    Route::post('dislike', 'FilesController@dislike');
 });
     
 

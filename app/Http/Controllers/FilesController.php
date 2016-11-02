@@ -11,6 +11,7 @@ use App\Http\Response;
 use App\File;
 use App\User;
 use App\Category;
+use App\Like;
 use DB;
 
 class FilesController extends Controller
@@ -32,13 +33,39 @@ class FilesController extends Controller
     public function index()
     {
         $files = File::all();
+        $user = \Auth::user()->id;
+        $likes = DB::table('likes')->where('user_id', '=', $user)->get();
         // get the name value from the search box
         $name = \Request::get('searchfile');
         // find file by name of the file 
         if($name != ''){
             $files = DB::table('files')->where('name', 'LIKE', '%'.$name.'%')->get();
         }
-        return view('file/home', compact('files', 'name'));
+        return view('file/home', compact('files', 'name', 'likes'));
+    }
+    /**
+     * Like a file
+     * @param Request $request
+     * @return type
+     * 
+     */
+    public function like(Request $request){
+        $like = new Like();
+        $like->user_id = $request->input('user_id');
+        $like->file_id = $request->input('file_id');
+        $like->save();
+        return redirect()->back();
+    }
+    
+    /**
+     * Dis like a file
+     * 
+     */
+    public function dislike(Request $request){
+        $user_id = $request->input('user_id');
+        $file_id = $request->input('file_id');
+        DB::table('likes')->where('user_id', '=', $user_id)->where('file_id', '=', $file_id)->delete();
+        return redirect()->back();
     }
 
     /**
@@ -87,7 +114,7 @@ class FilesController extends Controller
     }
     
     /**
-     * 
+     * Show user file
      * 
      */
     public function myFile(){
@@ -99,7 +126,7 @@ class FilesController extends Controller
 
     /**
      * 
-     * 
+     * Show detail a file with some comments 
      * 
      */
     public function detail($id){
@@ -110,7 +137,7 @@ class FilesController extends Controller
         foreach($comments as $comment){
             $users = DB::table('users')->where('id', '=', $comment->user_id)->get();
             foreach($users as $user){
-                $user1 = array($user->name, $user->avatar, $comment->content);
+                $user1 = array($user->name, $user->avatar, $comment->content, $comment->created_at);
                 array_push($result, $user1);
             }
         }
