@@ -43,30 +43,7 @@ class FilesController extends Controller
         }
         return view('file/home', compact('files', 'name', 'likes'));
     }
-    /**
-     * Like a file
-     * @param Request $request
-     * @return type
-     * 
-     */
-    public function like(Request $request){
-        $like = new Like();
-        $like->user_id = $request->input('user_id');
-        $like->file_id = $request->input('file_id');
-        $like->save();
-        return redirect()->back();
-    }
     
-    /**
-     * Dis like a file
-     * 
-     */
-    public function dislike(Request $request){
-        $user_id = $request->input('user_id');
-        $file_id = $request->input('file_id');
-        DB::table('likes')->where('user_id', '=', $user_id)->where('file_id', '=', $file_id)->delete();
-        return redirect()->back();
-    }
 
     /**
      * Show the form for creating a new resource.
@@ -198,6 +175,31 @@ class FilesController extends Controller
         $file = File::findOrFail($id);
         $file->delete();
         \Session('message1', 'This File has been deleted successfully!');
+        return redirect()->back();
+    }
+    
+    /**
+     * Like a file
+     * @param Request $request
+     * @return type
+     * 
+     */
+    public function like(Request $request){
+        $like = new Like();
+        $like->user_id = $request->input('user_id');
+        $like->file_id = $request->input('file_id');
+        $like->save();
+        return redirect()->back();
+    }
+    
+    /**
+     * Dis like a file
+     * 
+     */
+    public function dislike(Request $request){
+        $user_id = $request->input('user_id');
+        $file_id = $request->input('file_id');
+        DB::table('likes')->where('user_id', '=', $user_id)->where('file_id', '=', $file_id)->delete();
         return redirect()->back();
     }
 }

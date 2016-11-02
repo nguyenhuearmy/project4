@@ -28,7 +28,7 @@
                     {!! csrf_field() !!}
                     <input type="hidden" name="user_id" value="{{ \Auth::user()->id }} ">
                     <input type="hidden" name="file_id" value="{{ $file->id }}">
-                    <button type="submit" class="glyphicon glyphicon-thumbs-down"> DisLike</button>
+                    <button type="submit" class="btn btn-success btn-sm" ><span class="glyphicon glyphicon-thumbs-down" ></span> DisLike</button>
                 </form>
             <?php } ?>
             
@@ -37,7 +37,7 @@
                     {!! csrf_field() !!}
                     <input type="hidden" name="user_id" value="{{ \Auth::user()->id }} ">
                     <input type="hidden" name="file_id" value="{{ $file->id }}">
-                    <button type="submit" class="glyphicon glyphicon-thumbs-up"> Like</button>
+                    <button type="submit" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-thumbs-up"></span> Like</button>
                 </form>
         <?php } }?>
         </div>
